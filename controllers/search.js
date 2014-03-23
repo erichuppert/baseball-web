@@ -1,10 +1,11 @@
-function SearchController($scope, $http) {
+function SearchController($scope, $http, $location, $rootScope) {
 	$scope.$on('$viewContentLoaded', autocomplete);
-	$scope.url = "http://localhost:3000/atbats";
+	$scope.url = $rootScope.apiURL + "/atbats";
 	$scope.search = function () {
 		console.log($scope);
 		console.log($scope.pitcher);
 		console.log($scope.batter);
+		// get matchups
 		$http({
 			url: $scope.url,
 			method: "GET",
@@ -15,7 +16,11 @@ function SearchController($scope, $http) {
 		}).success(function(data, status){
 			$scope.status = status;
 			$scope.data = data;
-			console.log(data);
+			$location.path('/matchup');
+			$location.search({
+				b: $scope.batter,
+				p: $scope.pitcher
+			})
 		}).error(function(data, status){
 			$scope.data = data || "Request Failed";
 			$scope.status = status;
